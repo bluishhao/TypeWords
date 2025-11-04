@@ -136,42 +136,43 @@ defineExpose({
   closeImportDialog
 })
 defineRender(
-  () => {
-    const d = (item) => <Checkbox
-      modelValue={selectIds.includes(item.id)}
-      onChange={() => toggleSelect(item)}
-      size="large"/>
+    () => {
+      const d = (item) => <Checkbox
+          modelValue={selectIds.includes(item.id)}
+          onChange={() => toggleSelect(item)}
+          size="large"/>
 
-    return (
-      <div class="flex flex-col gap-3">
-        {
-          props.showToolbar && <div>
+      return (
+          <div class="flex flex-col gap-3">
             {
-              showSearchInput ? (
-                <div class="flex gap-4">
-                  <BaseInput
-                    clearable
-                    modelValue={searchKey}
-                    onUpdate:modelValue={debounce(e => searchKey = e)}
-                    class="flex-1">
-                    {{
-                      subfix: () => <IconFluentSearch24Regular
-                        class="text-lg text-gray"
-                      />
-                    }}
-                  </BaseInput>
-                  <BaseButton onClick={() => (showSearchInput = false, searchKey = '')}>取消</BaseButton>
-                </div>
-              ) : (
-                <div class="flex justify-between">
-                  <div class="flex gap-2 items-center">
-                    <Checkbox
-                      disabled={!currentList.length}
-                      onChange={() => toggleSelectAll()}
-                      modelValue={selectAll}
-                      size="large"/>
-                    <span>{selectIds.length} / {list.value.length}</span>
-                  </div>
+                props.showToolbar && <div>
+                  {
+                    showSearchInput ? (
+                        <div class="flex gap-4">
+                          <BaseInput
+                              clearable
+                              modelValue={searchKey}
+                              onUpdate:modelValue={debounce(e => searchKey = e)}
+                              class="flex-1"
+                              autofocus>
+                            {{
+                              subfix: () => <IconFluentSearch24Regular
+                                  class="text-lg text-gray"
+                              />
+                            }}
+                          </BaseInput>
+                          <BaseButton onClick={() => (showSearchInput = false, searchKey = '')}>取消</BaseButton>
+                        </div>
+                    ) : (
+                        <div class="flex justify-between">
+                          <div class="flex gap-2 items-center">
+                            <Checkbox
+                                disabled={!currentList.length}
+                                onChange={() => toggleSelectAll()}
+                                modelValue={selectAll}
+                                size="large"/>
+                            <span>{selectIds.length} / {list.value.length}</span>
+                          </div>
 
                   <div class="flex gap-2 relative">
                     {

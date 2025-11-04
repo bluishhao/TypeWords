@@ -183,6 +183,9 @@ watch(() => settingStore.wordPracticeType, (n) => {
   switch (n) {
     case WordPracticeType.Spell:
     case WordPracticeType.Dictation:
+      settingStore.dictation = true;
+      settingStore.translate = true;
+      break
     case WordPracticeType.Listen:
       settingStore.dictation = true;
       settingStore.translate = false;
@@ -240,9 +243,19 @@ async function next(isTyping: boolean = true) {
   }
   if (settingStore.wordPracticeMode === WordPracticeMode.Free) {
     if (data.index === data.words.length - 1) {
-      console.log('自由模式，全完学完了')
-      showStatDialog = true
-      localStorage.removeItem(PracticeSaveWordKey.key)
+      data.wrongWords = data.wrongWords.filter(v => (!data.excludeWords.includes(v.word)))
+      if (data.wrongWords.length) {
+        isTypingWrongWord.value = true
+        settingStore.wordPracticeType = WordPracticeType.FollowWrite
+        console.log('当前学完了，但还有错词')
+        data.words = shuffle(cloneDeep(data.wrongWords))
+        data.index = 0
+        data.wrongWords = []
+      }else {
+        console.log('自由模式，全完学完了')
+        showStatDialog = true
+        localStorage.removeItem(PracticeSaveWordKey.key)
+      }
     } else {
       data.index++
     }
@@ -279,8 +292,8 @@ async function next(isTyping: boolean = true) {
       } else {
         isTypingWrongWord.value = false
         console.log('当前学完了，没错词', statStore.total, statStore.step, data.index)
-        //学完了
-        if (statStore.step === 8) {
+        //学完了，这里第 7 步如果无单词，加 3 就是 9 了
+        if (statStore.step >= 8) {
           statStore.spend = Date.now() - statStore.startDate
           console.log('全完学完了')
           showStatDialog = true
